@@ -6,7 +6,7 @@
 import os
 import re
 import json
-from turtle import pd
+import datetime
 import PyPDF2
 import pdfplumber
 from docx import Document
@@ -264,11 +264,17 @@ class ScriptLoader:
         """
         title = lines[0].upper() if lines else ""
 
-        if 'INT.' in title:
+        # Более гибкие паттерны для определения типа сцены
+        import re
+
+        # Ищем INT. (интерьер) - может быть с пробелами, дефисами
+        if re.search(r'\b(INT\.|ИНТ\.)', title):
             return 'интерьер'
-        elif 'EXT.' in title:
+        # Ищем EXT. (экстерьер) - может быть с пробелами, дефисами
+        elif re.search(r'\b(EXT\.|ЭКСТ\.)', title):
             return 'экстерьер'
-        elif 'INT/EXT.' in title:
+        # Ищем комбинированные варианты
+        elif re.search(r'(INT\.\s*/\s*EXT\.|ИНТ\.\s*/\s*ЭКСТ\.|НАТ\s*/\s*ИНТ\.|INT\s*/\s*EXT)', title):
             return 'интерьер/экстерьер'
         else:
             return 'неопределен'
@@ -315,7 +321,7 @@ class ScriptLoader:
                 'scene_count': len(scenes)
             },
             'scenes': [asdict(scene) for scene in scenes],
-            'processed_at': str(pd.Timestamp.now()) if 'pd' in globals() else None
+            'processed_at': str(datetime.datetime.now())
         }
 
         logger.info(

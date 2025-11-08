@@ -16,7 +16,8 @@ load_dotenv(dotenv_path='.env')
 def quick_test():
     """Быстрый тест функциональности"""
 
-    script_file = SCRIPT_FILE
+    # Получаем настройки из переменных окружения
+    script_file = os.getenv('SCRIPT_FILE')
 
     print("БЫСТРЫЙ ТЕСТ ОБРАБОТЧИКА СЦЕНАРИЕВ")
     print("=" * 45)
